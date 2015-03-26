@@ -1,0 +1,16 @@
+body {
+    background-color: #58433f;
+    color:white;
+}
+
+.separated-block {
+    margin: 50px 0px 50px 0px;
+    
+}
+
+.block {
+    background-color: #222;
+    border: 1px solid #080808;
+    border-radius: 5px;
+    padding: 15px;
+}
