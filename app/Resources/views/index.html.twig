@@ -3,6 +3,58 @@
 {% block main_container %}
     <div class="block">
         <h1>My Events Center</h1>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-6">
+                    <h2>The nearest events</h2>
+                    {% for event in nearestEvents %}
+                        <div class="event">
+                            <h3>{{event.name}}</h3>
+                            <span>{{event.startDate|date('d-m-Y H:i:s')}} - {{event.endDate|date('d-m-Y H:i:s')}}</span>
+                            <div>
+                                {{ event.description }}
+                            </div>
+                            <button class="btn btn-success" onclick="changeLocalization('{{event.address}}');">Show on the map</button>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="col-sm-6">
+                    <div id="googleMap" style="width:500px;height:380px;"></div>
+                </div>
+            </div>
+        </div>
+
     </div>
 {% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    <script src="http://maps.googleapis.com/maps/api/js"></script>
+    <script>
+        var homepageMap;
+        function initialize() {
+            var mapProp = {
+                center: new google.maps.LatLng(50.264302, 19.023628),
+                zoom: 6,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            homepageMap = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+        }
+        google.maps.event.addDomListener(window, 'load', initialize);
+
+        function changeLocalization(newAddress) {
+            var geocoder = new google.maps.Geocoder();
+            geocoder.geocode({
+                'address': newAddress
+            }, function (results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    var marker = new google.maps.Marker({
+                        map: homepageMap,
+                        position: results[0].geometry.location
+                    });
+                    homepageMap.setCenter(marker.getPosition());
+                }
+            });
+        }
+    </script>
+{% endblock %}

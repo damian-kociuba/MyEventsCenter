@@ -11,10 +11,17 @@ class Event {
 
     /**
      * @ORM\Id 
-     * @ORM\Column 
+     * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
      */
     private $id;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="events")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     **/
+    private $user;
+    
     /**
      * @ORM\Column(type="boolean")
      */
@@ -54,8 +61,7 @@ class Event {
      * @ORM\Column(type="string", nullable=false)
      */
     private $address;
-
-
+    
     /**
      * Get id
      *
@@ -248,5 +254,28 @@ class Event {
     public function getAddress()
     {
         return $this->address;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \AppBundle\Entity\User $user
+     * @return Event
+     */
+    public function setUser(\AppBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \AppBundle\Entity\User 
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

@@ -12,6 +12,11 @@ class IndexController extends Controller
      */
     public function indexAction()
     {
-        return $this->render('index.html.twig');
+        $em = $this->getDoctrine()->getManager();
+        $query = $em->createQuery('SELECT e FROM AppBundle:Event e WHERE e.isPublic=true');
+        
+        return $this->render('index.html.twig', array(
+            'nearestEvents' => $query->getResult(),
+        ));
     }
 }

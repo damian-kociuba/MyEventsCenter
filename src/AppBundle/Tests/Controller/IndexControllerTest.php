@@ -6,10 +6,13 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class IndexControllerTest extends WebTestCase {
 
+    use \AppBundle\Utils\DatabaseHelperForTests;
+
     protected function setUp() {
-        self::runCommand('doctrine:database:create');
-        self::runCommand('doctrine:schema:update --force');
-        self::runCommand('doctrine:fixtures:load --purge-with-truncate');
+        $this->dropDatabase();
+        $this->createDatabase();
+        $this->createSchema();
+        $this->loadFixtures();
     }
 
     public function testIndex() {
@@ -18,6 +21,10 @@ class IndexControllerTest extends WebTestCase {
         $crawler = $client->request('GET', '/');
         echo $client->getResponse()->getStatusCode();
         $this->assertTrue(200 === $client->getResponse()->getStatusCode());
+
+        $events = $crawler->filter('.event');
+        $this->assertEquals(2, $events->count());
+        
     }
 
 }
