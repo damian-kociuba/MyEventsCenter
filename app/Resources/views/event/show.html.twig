@@ -1,0 +1,121 @@
+{% extends 'commonSideTemplate.html.twig' %}
+
+{% block main_container %}
+    <div class="block">
+        <h2>{{event.name}}</h2>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                Start
+                            </div>
+                            <div class="col-sm-9">
+                                {{event.startDate|date('d-m-Y H:i:s')}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                End
+                            </div>
+                            <div class="col-sm-9">
+                                {{event.endDate|date('d-m-Y H:i:s')}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                Description
+                            </div>
+                            <div class="col-sm-9">
+                                {{event.description}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                Address:
+                            </div>
+                            <div class="col-sm-9">
+                                {{event.address}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                Registration end:
+                            </div>
+                            <div class="col-sm-9">
+                                {{event.endRegistrationDate|date('d-m-Y H:i:s')}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                Places available:
+                            </div>
+                            <div class="col-sm-9">
+                                {% if event.isMembersLimit() %}
+                                    {{event.getNumberOfAvailablePlaces()}}
+                                {% else %}
+                                    <i>No limit</i>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    {% if app.user %}
+                    <a href="{{path('join_to_event', {'eventId':event.Id})}}" class="btn btn-success">
+                        Join!
+                    </a>
+                    {% endif %}
+                    <h3>Members</h3>
+                    {% for user in event.getJoinedUsers() %}
+                        <div class="member">
+                            {{user.username}}
+                        </div>
+                    {% endfor %}
+                    {% if event.getJoinedUsers() is empty %}
+                        <i>No members</i>
+                    {% endif %}
+                </div>
+                <div class="col-sm-6">
+
+                    <div id="googleMap" style="width:500px;height:380px;"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="http://maps.googleapis.com/maps/api/js"></script>
+    <script>
+
+        function initialize() {
+
+            geocoder = new google.maps.Geocoder();
+            geocoder.geocode({
+                'address': '{{event.address}}'
+            }, function (results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    var myOptions = {
+                        zoom: 10,
+                        center: results[0].geometry.location,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                    }
+                    map = new google.maps.Map(document.getElementById("googleMap"), myOptions);
+
+                    var marker = new google.maps.Marker({
+                        map: map,
+                        position: results[0].geometry.location
+                    });
+                }
+            });
+        }
+        google.maps.event.addDomListener(window, 'load', initialize);
+
+
+
+    </script>
+{% endblock %}

@@ -18,9 +18,15 @@ class User extends BaseUser {
     protected $id;
 
     /**
-     * @ORM\OneToMany(targetEntity="Event", mappedBy="user")
-     **/
-    private $events;
+     * @ORM\OneToMany(targetEntity="Event", mappedBy="owner")
+     */
+    private $ownEvents;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Event", mappedBy="joinedUsers")
+     */
+    private $joinedEvents;
+
     /**
      * @ORM\Column(type="integer", length=1, options={"comment":"0-woman, 1-man"})
      */
@@ -31,20 +37,18 @@ class User extends BaseUser {
      * @ORM\column(type="date")
      */
     protected $birthDate;
-    
+
     public function __construct() {
         parent::__construct();
         // your own logic
     }
-
 
     /**
      * Get id
      *
      * @return integer 
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -54,8 +58,7 @@ class User extends BaseUser {
      * @param integer $gender
      * @return User
      */
-    public function setGender($gender)
-    {
+    public function setGender($gender) {
         $this->gender = $gender;
 
         return $this;
@@ -66,8 +69,7 @@ class User extends BaseUser {
      *
      * @return integer 
      */
-    public function getGender()
-    {
+    public function getGender() {
         return $this->gender;
     }
 
@@ -77,8 +79,7 @@ class User extends BaseUser {
      * @param \DateTime $birthDate
      * @return User
      */
-    public function setBirthDate($birthDate)
-    {
+    public function setBirthDate($birthDate) {
         $this->birthDate = $birthDate;
 
         return $this;
@@ -89,41 +90,76 @@ class User extends BaseUser {
      *
      * @return \DateTime 
      */
-    public function getBirthDate()
-    {
+    public function getBirthDate() {
         return $this->birthDate;
     }
 
     /**
-     * Add events
+     * Add ownEvents
      *
-     * @param \AppBundle\Entity\Event $events
+     * @param \AppBundle\Entity\Event $ownEvents
      * @return User
      */
-    public function addEvent(\AppBundle\Entity\Event $events)
-    {
-        $this->events[] = $events;
+    public function addOwnEvent(\AppBundle\Entity\Event $ownEvents) {
+        $this->ownEvents[] = $ownEvents;
 
         return $this;
     }
 
     /**
-     * Remove events
+     * Remove ownEvents
      *
-     * @param \AppBundle\Entity\Event $events
+     * @param \AppBundle\Entity\Event $ownEvents
      */
-    public function removeEvent(\AppBundle\Entity\Event $events)
-    {
-        $this->events->removeElement($events);
+    public function removeOwnEvent(\AppBundle\Entity\Event $ownEvents) {
+        $this->ownEvents->removeElement($ownEvents);
     }
 
     /**
-     * Get events
+     * Get ownEvents
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getEvents()
+    public function getOwnEvents() {
+        return $this->ownEvents;
+    }
+
+
+    /**
+     * Add joinedEvents
+     *
+     * @param \AppBundle\Entity\Event $joinedEvents
+     * @return User
+     */
+    private function addJoinedEvent(\AppBundle\Entity\Event $joinedEvents)
     {
-        return $this->events;
+        $this->joinedEvents[] = $joinedEvents;
+
+        return $this;
+    }
+
+    /**
+     * Remove joinedEvents
+     *
+     * @param \AppBundle\Entity\Event $joinedEvents
+     */
+    public function removeJoinedEvent(\AppBundle\Entity\Event $joinedEvents)
+    {
+        $this->joinedEvents->removeElement($joinedEvents);
+    }
+
+    /**
+     * Get joinedEvents
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getJoinedEvents()
+    {
+        return $this->joinedEvents;
+    }
+    
+    public function joinToEvent(\AppBundle\Entity\Event $event) {
+        $this->addJoinedEvent($event);
+        $event->addJoinedUser($this);
     }
 }

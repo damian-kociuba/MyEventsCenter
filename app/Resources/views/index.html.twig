@@ -9,7 +9,7 @@
                     <h2>The nearest events</h2>
                     {% for event in nearestEvents %}
                         <div class="event">
-                            <h3>{{event.name}}</h3>
+                            <h3><a href="{{path('show_event', {'eventId':event.id})}}">{{event.name}}</a></h3>
                             <span>{{event.startDate|date('d-m-Y H:i:s')}} - {{event.endDate|date('d-m-Y H:i:s')}}</span>
                             <div>
                                 {{ event.description }}
@@ -32,6 +32,7 @@
     <script src="http://maps.googleapis.com/maps/api/js"></script>
     <script>
         var homepageMap;
+        var homepageMapMarker;
         function initialize() {
             var mapProp = {
                 center: new google.maps.LatLng(50.264302, 19.023628),
@@ -48,11 +49,14 @@
                 'address': newAddress
             }, function (results, status) {
                 if (status == google.maps.GeocoderStatus.OK) {
-                    var marker = new google.maps.Marker({
+                    if (typeof (homepageMapMarker) !== 'undefined') {
+                        homepageMapMarker.setMap(null);
+                    }
+                    homepageMapMarker = new google.maps.Marker({
                         map: homepageMap,
                         position: results[0].geometry.location
                     });
-                    homepageMap.setCenter(marker.getPosition());
+                    homepageMap.setCenter(homepageMapMarker.getPosition());
                 }
             });
         }

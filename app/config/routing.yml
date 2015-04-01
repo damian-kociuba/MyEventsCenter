@@ -1,7 +1,12 @@
-app:
-    resource: "@AppBundle/Controller/"
-    type:     annotation
-
+homepage:
+    path: /
+    defaults: {_controller: AppBundle:Homepage:index}
+show_event:
+    path: /event/{eventId}
+    defaults: {_controller: AppBundle:ShowEvent:index}
+join_to_event:
+    path: /event/join/{eventId}
+    defaults: {_controller: AppBundle:JoinToEvent:index}
 
 fos_user_security:
     resource: "@FOSUserBundle/Resources/config/routing/security.xml"

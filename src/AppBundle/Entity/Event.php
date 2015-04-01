@@ -17,10 +17,10 @@ class Event {
     private $id;
     
     /**
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="events")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="ownEvents")
+     * @ORM\JoinColumn(name="owner_id", referencedColumnName="id")
      **/
-    private $user;
+    private $owner;
     
     /**
      * @ORM\Column(type="boolean")
@@ -63,9 +63,30 @@ class Event {
     private $address;
     
     /**
+     * @ORM\ManyToMany(targetEntity="User", inversedBy="joinedEvents")
+     * @ORM\JoinTable(name="users_events")
+     **/
+    private $joinedUsers;
+
+    public function isMembersLimit() {
+        return $this->getMaxMembersNumber() !== null;
+    }
+    /**
+     * 
+     * @return false if no limit or integer
+     */
+    public function getNumberOfAvailablePlaces() {
+        if($this->getMaxMembersNumber() === null) {
+            return false;
+        }
+        else {
+            return $this->getMaxMembersNumber() - $this->getJoinedUsers()->count();
+        }
+    }
+    /**
      * Get id
      *
-     * @return string 
+     * @return integer 
      */
     public function getId()
     {
@@ -257,25 +278,65 @@ class Event {
     }
 
     /**
-     * Set user
+     * Set owner
      *
-     * @param \AppBundle\Entity\User $user
+     * @param \AppBundle\Entity\User $owner
      * @return Event
      */
-    public function setUser(\AppBundle\Entity\User $user = null)
+    public function setOwner(\AppBundle\Entity\User $owner = null)
     {
-        $this->user = $user;
+        $this->owner = $owner;
 
         return $this;
     }
 
     /**
-     * Get user
+     * Get owner
      *
      * @return \AppBundle\Entity\User 
      */
-    public function getUser()
+    public function getOwner()
     {
-        return $this->user;
+        return $this->owner;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->joinedUsers = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add joinedUsers
+     *
+     * @param \AppBundle\Entity\User $joinedUsers
+     * @return Event
+     */
+    public function addJoinedUser(\AppBundle\Entity\User $joinedUsers)
+    {
+        $this->joinedUsers[] = $joinedUsers;
+
+        return $this;
+    }
+
+    /**
+     * Remove joinedUsers
+     *
+     * @param \AppBundle\Entity\User $joinedUsers
+     */
+    public function removeJoinedUser(\AppBundle\Entity\User $joinedUsers)
+    {
+        $this->joinedUsers->removeElement($joinedUsers);
+    }
+
+    /**
+     * Get joinedUsers
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getJoinedUsers()
+    {
+        return $this->joinedUsers;
     }
 }
