@@ -3,15 +3,15 @@
 namespace AppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use AppBundle\Entity\EventRepository;
 
 class ShowEventController extends Controller
 {
     public function indexAction($eventId)
     {
         $em = $this->getDoctrine()->getManager();
-        $query = $em->createQuery('SELECT e FROM AppBundle:Event e WHERE e.id=:eventId')
-                ->setParameter('eventId', $eventId);
-        $event = $query->getSingleResult();
+        $eventRepo = $em->getRepository('AppBundle:Event');
+        $event = $eventRepo->find($eventId);
         
         return $this->render('event/show.html.twig', array(
             'event' => $event,

@@ -62,7 +62,8 @@
                     </div>
                     <br />
                     {% if app.user %}
-                    <a href="{{path('join_to_event', {'eventId':event.Id})}}" class="btn btn-success">
+                        
+                    <a href="{{path('join_to_event', {'eventId':event.Id})}}" class="btn btn-success" id="joinButton">
                         Join!
                     </a>
                     {% endif %}
