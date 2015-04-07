@@ -61,21 +61,15 @@ class JoinToEventEventControllerTest extends WebTestCase {
      * @var Client
      */
     private $client;
-
+    
     /**
      * Step 1
      */
     public function testLogin() {
         $this->client = static::createClient();
 
-        $crawler = $this->client->request('GET', '/login');
-
-        $form = $crawler->selectButton('_submit')->form(array(
-            '_username' => self::$testUser->getUsername(),
-            '_password' => self::TEST_USER_PASSWORD,
-        ));
-        $this->client->submit($form);
-        $this->client->followRedirect(); // "/" page
+        self::$userHelperForTest->loginAsTestUser($this->client);
+        
         $this->assertEquals('AppBundle\Controller\HomepageController::indexAction', $this->client->getRequest()->attributes->get('_controller'));
 
         return $this->client;

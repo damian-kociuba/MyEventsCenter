@@ -63,7 +63,7 @@
                     <br />
                     {% if app.user %}
                         {% if isCurrentUserMember %}
-                            <a href="{{path('join_to_event', {'eventId':event.Id})}}" class="btn btn-warning" id="resignButton">
+                            <a href="{{path('resign_from_event', {'eventId':event.Id})}}" class="btn btn-warning" id="resignButton">
                                 Resign
                             </a>
                         {% else %}

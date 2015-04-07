@@ -7,6 +7,9 @@ show_event:
 join_to_event:
     path: /event/join/{eventId}
     defaults: {_controller: AppBundle:JoinToEvent:index}
+resign_from_event:
+    path: /event/resign/{eventId}
+    defaults: {_controller: AppBundle:ResignEvent:index}
 
 fos_user_security:
     resource: "@FOSUserBundle/Resources/config/routing/security.xml"

@@ -4,7 +4,7 @@ namespace AppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class JoinToEventController extends Controller {
+class ResignEventController extends Controller {
 
     public function indexAction($eventId) {
         $em = $this->getDoctrine()->getManager();
@@ -13,7 +13,7 @@ class JoinToEventController extends Controller {
         $event = $query->getSingleResult();
 
         $user = $this->getUser();
-        $user->joinToEvent($event);
+        $user->resignFromEvent($event);
         $em->flush();
 
         return $this->redirectToRoute('show_event', array('eventId' => $event->getId()));

@@ -124,15 +124,13 @@ class User extends BaseUser {
         return $this->ownEvents;
     }
 
-
     /**
      * Add joinedEvents
      *
      * @param \AppBundle\Entity\Event $joinedEvents
      * @return User
      */
-    private function addJoinedEvent(\AppBundle\Entity\Event $joinedEvents)
-    {
+    private function addJoinedEvent(\AppBundle\Entity\Event $joinedEvents) {
         $this->joinedEvents[] = $joinedEvents;
 
         return $this;
@@ -143,8 +141,7 @@ class User extends BaseUser {
      *
      * @param \AppBundle\Entity\Event $joinedEvents
      */
-    public function removeJoinedEvent(\AppBundle\Entity\Event $joinedEvents)
-    {
+    public function removeJoinedEvent(\AppBundle\Entity\Event $joinedEvents) {
         $this->joinedEvents->removeElement($joinedEvents);
     }
 
@@ -153,13 +150,18 @@ class User extends BaseUser {
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getJoinedEvents()
-    {
+    public function getJoinedEvents() {
         return $this->joinedEvents;
     }
-    
+
     public function joinToEvent(\AppBundle\Entity\Event $event) {
         $this->addJoinedEvent($event);
         $event->addJoinedUser($this);
     }
+
+    public function resignFromEvent(\AppBundle\Entity\Event $event) {
+        $this->removeJoinedEvent($event);
+        $event->removeJoinedUser($this);
+    }
+
 }

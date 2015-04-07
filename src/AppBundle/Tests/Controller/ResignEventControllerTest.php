@@ -10,7 +10,7 @@ use AppBundle\Entity\User;
 use AppBundle\Utils\UserHelperForTest;
 use AppBundle\Utils\EventHelperForTest;
 
-class JoinToEventEventControllerTest extends WebTestCase {
+class ResignEventEventControllerTest extends WebTestCase {
 
     const TEST_USER_PASSWORD = 'test';
 
@@ -53,29 +53,26 @@ class JoinToEventEventControllerTest extends WebTestCase {
 
         self::$userHelperForTest = new UserHelperForTest(self::$em);
         self::$eventHelperForTest = new EventHelperForTest(self::$em);
-        self::$testUser = self::$userHelperForTest->createTestUser('JoinUser', self::TEST_USER_PASSWORD);
+        self::$testUser = self::$userHelperForTest->createTestUser('ResignUser', self::TEST_USER_PASSWORD);
         self::$testEvent = self::$eventHelperForTest->createTestEvent(self::$testUser, 'Join test Event');
+        
+        self::$testUser->joinToEvent(self::$testEvent);
+        self::$em->flush();
     }
 
     /**
      * @var Client
      */
     private $client;
-
+    
     /**
      * Step 1
      */
     public function testLogin() {
         $this->client = static::createClient();
 
-        $crawler = $this->client->request('GET', '/login');
-
-        $form = $crawler->selectButton('_submit')->form(array(
-            '_username' => self::$testUser->getUsername(),
-            '_password' => self::TEST_USER_PASSWORD,
-        ));
-        $this->client->submit($form);
-        $this->client->followRedirect(); // "/" page
+        self::$userHelperForTest->loginAsTestUser($this->client);
+        
         $this->assertEquals('AppBundle\Controller\HomepageController::indexAction', $this->client->getRequest()->attributes->get('_controller'));
 
         return $this->client;
@@ -86,9 +83,9 @@ class JoinToEventEventControllerTest extends WebTestCase {
      * @depends testLogin
      * @param Client client
      */
-    public function testJoinButtonBeforeJoinExists(Client $client) {
+    public function testResignButtonExists(Client $client) {
         $crawler = $client->request('GET', '/event/' . self::$testEvent->getId());
-        $this->assertEquals(1, $crawler->filter("#joinButton")->count());
+        $this->assertEquals(1, $crawler->filter("#resignButton")->count());
     }
 
     /**
@@ -96,19 +93,9 @@ class JoinToEventEventControllerTest extends WebTestCase {
      * @depends testLogin
      * @param Client client
      */
-    public function testResignButtonBeforeJoinNoExists(Client $client) {
-        $crawler = $client->request('GET', '/event/' . self::$testEvent->getId());
-        $this->assertEquals(0, $crawler->filter("#resignButton")->count());
-    }
+    public function testResignEventRedirectToEventPreview(Client $client) {
 
-    /**
-     * Step 2
-     * @depends testLogin
-     * @param Client client
-     */
-    public function testJoinToEventRedirectToEventPreview(Client $client) {
-
-        $client->request('GET', '/event/join/' . self::$testEvent->getId());
+        $client->request('GET', '/event/resign/' . self::$testEvent->getId());
         $client->followRedirect();
 
         $this->assertEquals('AppBundle\Controller\ShowEventController::indexAction', $client->getRequest()->attributes->get('_controller'));
@@ -118,9 +105,9 @@ class JoinToEventEventControllerTest extends WebTestCase {
 
     /**
      * Step 3
-     * @depends testJoinToEventRedirectToEventPreview
+     * @depends testResignEventRedirectToEventPreview
      */
-    public function testIsConnectionBetweenCurrentUserAndEvent() {
+    public function testIsNotUserMemberOfEventAfterResign() {
         //getting the same event from database
         $query = self::$em->createQuery("SELECT e FROM AppBundle:Event e  WHERE e.id=:eventId")
                 ->setParameter('eventId', self::$testEvent->getId());
@@ -132,27 +119,7 @@ class JoinToEventEventControllerTest extends WebTestCase {
                 $foundCurrentUser = true;
             }
         }
-        $this->assertTrue($foundCurrentUser);
-    }
-
-    /**
-     * Step 4
-     * @depends testJoinToEventRedirectToEventPreview
-     * @param Client client
-     */
-    public function testJoinButtonAfterJoinNoExists(Client $client) {
-        $crawler = $client->request('GET', '/event/' . self::$testEvent->getId());
-        $this->assertEquals(0, $crawler->filter("#joinButton")->count());
-    }
-
-    /**
-     * Step 4
-     * @depends testJoinToEventRedirectToEventPreview
-     * @param Client client
-     */
-    public function testResignButtonAfterJoinExists(Client $client) {
-        $crawler = $client->request('GET', '/event/' . self::$testEvent->getId());
-        $this->assertEquals(1, $crawler->filter("#resignButton")->count());
+        $this->assertFalse($foundCurrentUser);
     }
 
 }
