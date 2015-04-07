@@ -7,14 +7,40 @@ use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\BrowserKit\Client;
 use AppBundle\Entity\Event;
 use AppBundle\Entity\User;
+use AppBundle\Utils\UserHelperForTest;
+use AppBundle\Utils\EventHelperForTest;
 
 class JoinToEventEventControllerTest extends WebTestCase {
 
     const TEST_USER_PASSWORD = 'test';
 
+    /**
+     *
+     * @var \Doctrine\Common\Persistence\ObjectManager
+     */
     private static $em;
+
+    /**
+     *
+     * @var User
+     */
     private static $testUser;
+
+    /**
+     *
+     * @var Event
+     */
     private static $testEvent;
+
+    /**
+     * @var UserHelperForTest
+     */
+    private static $userHelperForTest;
+
+    /**
+     * @var EventHelperForTest
+     */
+    private static $eventHelperForTest;
 
     public static function setUpBeforeClass() {
 
@@ -25,41 +51,10 @@ class JoinToEventEventControllerTest extends WebTestCase {
                 ->get('doctrine')
                 ->getManager();
 
-        self::$testUser = self::createTestUser();
-        self::$testEvent = self::createTestEvent(self::$testUser);
-    }
-
-    private static function createTestUser() {
-        $testUser = new User();
-        $testUser->setUsername('joinUser');
-        $testUser->setEmail('joinUser@example.com');
-        $testUser->setEnabled(true);
-        $testUser->addRole('ROLE_USER');
-        $testUser->setPlainPassword(self::TEST_USER_PASSWORD);
-        $testUser->setGender(1);
-        $testUser->setBirthDate(new \DateTime('02.01.1999'));
-
-
-        self::$em->persist($testUser);
-        self::$em->flush();
-        return $testUser;
-    }
-
-    private static function createTestEvent($eventOwner) {
-        $event = new Event();
-        $event->setAddress('Gdańsk, Spokojna 1');
-        $event->setDescription('Public past event');
-        $event->setEndDate(new \DateTime('28.10.2015'));
-        $event->setIsPublic(true);
-        $event->setEndRegistrationDate(new \DateTime('15.05.2015'));
-        $event->setName('JoinToEventTest Name');
-        $event->setStartDate(new \DateTime('27.10.2015'));
-        $event->setOwner($eventOwner);
-        $event->setMaxMembersNumber(20);
-        self::$em->persist($event);
-        self::$em->flush();
-
-        return $event;
+        self::$userHelperForTest = new UserHelperForTest(self::$em);
+        self::$eventHelperForTest = new EventHelperForTest(self::$em);
+        self::$testUser = self::$userHelperForTest->createTestUser('JoinUser', self::TEST_USER_PASSWORD);
+        self::$testEvent = self::$eventHelperForTest->createTestEvent(self::$testUser, 'Join test Event');
     }
 
     /**

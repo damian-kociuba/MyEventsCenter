@@ -62,10 +62,16 @@
                     </div>
                     <br />
                     {% if app.user %}
-                        
-                    <a href="{{path('join_to_event', {'eventId':event.Id})}}" class="btn btn-success" id="joinButton">
-                        Join!
-                    </a>
+                        {% if isCurrentUserMember %}
+                            <a href="{{path('join_to_event', {'eventId':event.Id})}}" class="btn btn-warning" id="resignButton">
+                                Resign
+                            </a>
+                        {% else %}
+                            <a href="{{path('join_to_event', {'eventId':event.Id})}}" class="btn btn-success" id="joinButton">
+                                Join!
+                            </a>
+                        {% endif %}
+
                     {% endif %}
                     <h3>Members</h3>
                     {% for user in event.getJoinedUsers() %}
