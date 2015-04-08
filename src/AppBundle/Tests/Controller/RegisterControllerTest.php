@@ -48,9 +48,9 @@ class RegisterControllerTest extends WebTestCase {
         $kernel->boot();
         $em = $kernel->getContainer()->get('doctrine.orm.entity_manager');
 
-        $query = $em->createQuery("SELECT u FROM AppBundle:User u WHERE u.username!='admin'");
-        $users = $query->getResult();
-        $this->assertEquals(1, count($users));
+        $query = $em->createQuery("SELECT u FROM AppBundle:User u WHERE u.username='login_test'");
+        $addedUser = $query->getResult();
+        $this->assertEquals(1, count($addedUser));
     }
 
 }

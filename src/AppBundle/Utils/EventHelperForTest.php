@@ -11,18 +11,14 @@ use AppBundle\Entity\Event;
  *
  * @author dkociuba
  */
-class EventHelperForTest {
+trait EventHelperForTest {
 
     /**
-     * @var ObjectManager 
+     * @var Event
      */
-    private $em;
+    private static $testEvent;
 
-    public function __construct(ObjectManager $em) {
-        $this->em = $em;
-    }
-
-    public function createTestEvent(User $eventOwner, $eventName) {
+    public function createTestEvent(ObjectManager $em, User $eventOwner, $eventName) {
         $event = new Event();
         $event->setAddress('Gdańsk, Spokojna 1');
         $event->setDescription('Public past event');
@@ -33,9 +29,10 @@ class EventHelperForTest {
         $event->setStartDate(new \DateTime('27.10.2015'));
         $event->setOwner($eventOwner);
         $event->setMaxMembersNumber(20);
-        $this->em->persist($event);
-        $this->em->flush();
-
+        $em->persist($event);
+        $em->flush();
+        
+        self::$testEvent = $event;
         return $event;
     }
 

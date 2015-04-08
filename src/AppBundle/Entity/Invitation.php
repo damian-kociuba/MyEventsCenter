@@ -18,7 +18,7 @@ class Invitation {
     
     /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="sendInvitations")
-     * @ORM\JoinColumn(name="sender_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="sender_id", referencedColumnName="id", onDelete="CASCADE")
      **/
     private $sender;
     
@@ -35,7 +35,7 @@ class Invitation {
 
     /**
      * @ORM\OneToOne(targetEntity="Event", inversedBy="invitation")
-     * @ORM\JoinColumn(name="event_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="event_id", referencedColumnName="id", onDelete="CASCADE")
      **/
     private $event;
     

@@ -19,7 +19,7 @@ class Event {
     
     /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="ownEvents")
-     * @ORM\JoinColumn(name="owner_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="owner_id", referencedColumnName="id", onDelete="CASCADE")
      **/
     private $owner;
     

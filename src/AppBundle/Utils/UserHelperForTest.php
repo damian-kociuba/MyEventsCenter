@@ -11,43 +11,41 @@ use AppBundle\Entity\User;
  *
  * @author dkociuba
  */
-class UserHelperForTest {
+trait UserHelperForTest {
+
+    private static $userHelperUsername;
+    private static $userHelperPassword;
 
     /**
-     * @var ObjectManager 
+     * @var User
      */
-    private $em;
-    private $userName;
-    private $password;
+    private static $testUser;
 
-    public function __construct(ObjectManager $em) {
-        $this->em = $em;
-    }
-
-    public function createTestUser($userName, $password) {
-        $this->userName = $userName;
-        $this->password = $password;
+    public static function createTestUser(ObjectManager $em, $userName, $password) {
+        self::$userHelperUsername = $userName;
+        self::$userHelperPassword = $password;
         $testUser = new User();
-        $testUser->setUsername($this->userName);
-        $testUser->setEmail($this->userName . '@example.com');
+        $testUser->setUsername(self::$userHelperUsername);
+        $testUser->setEmail(self::$userHelperUsername . '@example.com');
         $testUser->setEnabled(true);
         $testUser->addRole('ROLE_USER');
-        $testUser->setPlainPassword($this->password);
+        $testUser->setPlainPassword(self::$userHelperPassword);
         $testUser->setGender(1);
         $testUser->setBirthDate(new \DateTime('02.01.1999'));
 
 
-        $this->em->persist($testUser);
-        $this->em->flush();
+        $em->persist($testUser);
+        $em->flush();
+        self::$testUser = $testUser;
         return $testUser;
     }
 
-    public function loginAsTestUser(Client $client) {
+    public static function loginAsTestUser(Client $client) {
         $crawler = $client->request('GET', '/login');
 
         $form = $crawler->selectButton('_submit')->form(array(
-            '_username' => $this->userName,
-            '_password' => $this->password,
+            '_username' => self::$userHelperUsername,
+            '_password' => self::$userHelperPassword,
         ));
         $client->submit($form);
         $client->followRedirect(); // "/" page

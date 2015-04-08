@@ -14,33 +14,14 @@ class JoinToEventEventControllerTest extends WebTestCase {
 
     const TEST_USER_PASSWORD = 'test';
 
+    use \AppBundle\Utils\UserHelperForTest;
+    use \AppBundle\Utils\EventHelperForTest;
+
     /**
      *
      * @var \Doctrine\Common\Persistence\ObjectManager
      */
     private static $em;
-
-    /**
-     *
-     * @var User
-     */
-    private static $testUser;
-
-    /**
-     *
-     * @var Event
-     */
-    private static $testEvent;
-
-    /**
-     * @var UserHelperForTest
-     */
-    private static $userHelperForTest;
-
-    /**
-     * @var EventHelperForTest
-     */
-    private static $eventHelperForTest;
 
     public static function setUpBeforeClass() {
 
@@ -51,25 +32,23 @@ class JoinToEventEventControllerTest extends WebTestCase {
                 ->get('doctrine')
                 ->getManager();
 
-        self::$userHelperForTest = new UserHelperForTest(self::$em);
-        self::$eventHelperForTest = new EventHelperForTest(self::$em);
-        self::$testUser = self::$userHelperForTest->createTestUser('JoinUser', self::TEST_USER_PASSWORD);
-        self::$testEvent = self::$eventHelperForTest->createTestEvent(self::$testUser, 'Join test Event');
+        self::createTestUser(self::$em, 'JoinUser', self::TEST_USER_PASSWORD);
+        self::createTestEvent(self::$em, self::$testUser, 'Join test Event');
     }
 
     /**
      * @var Client
      */
     private $client;
-    
+
     /**
      * Step 1
      */
     public function testLogin() {
         $this->client = static::createClient();
 
-        self::$userHelperForTest->loginAsTestUser($this->client);
-        
+        self::loginAsTestUser($this->client);
+
         $this->assertEquals('AppBundle\Controller\HomepageController::indexAction', $this->client->getRequest()->attributes->get('_controller'));
 
         return $this->client;
