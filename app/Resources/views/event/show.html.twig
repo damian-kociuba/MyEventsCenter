@@ -72,6 +72,13 @@
                             </a>
                         {% endif %}
 
+                        {% if isCurrentUserOwner %}
+                            <h3>Maintenance</h3>
+                            {% if not isEventPublic %}
+                                <a class="btn btn-default" href="{{path('send_invitation', {'eventId': event.Id})}}">Invite users</a>
+                            {% endif %}
+                            <a class="btn btn-default" href="{{path('delete_users_from_event', {'eventId': event.Id})}}">Select users to remove</a>
+                        {% endif %}
                     {% endif %}
                     <h3>Members</h3>
                     {% for user in event.getJoinedUsers() %}

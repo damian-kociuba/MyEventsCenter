@@ -4,12 +4,40 @@ homepage:
 show_event:
     path: /event/{eventId}
     defaults: {_controller: AppBundle:ShowEvent:index}
+    requirements:
+        eventId:  \d+
 join_to_event:
     path: /event/join/{eventId}
     defaults: {_controller: AppBundle:JoinToEvent:index}
+    requirements:
+        eventId:  \d+
 resign_from_event:
     path: /event/resign/{eventId}
     defaults: {_controller: AppBundle:ResignEvent:index}
+    requirements:
+        eventId:  \d+
+new_event:
+    path: /event/new
+    defaults: {_controller: AppBundle:NewEvent:index}
+    
+send_invitation:
+    path: /invitation/send/{eventId}
+    defaults: {_controller: AppBundle:SendInvitation:index}
+    methods:  [GET]
+    
+send_invitation_handle_form:
+    path: /invitation/send/{eventId}
+    defaults: {_controller: AppBundle:SendInvitation:handleForm}
+    methods:  [POST]
+    
+delete_users_from_event:
+    path: /event/select_user_to_remove/{eventId}
+    defaults: {_controller: AppBundle:DeleteUsersFromEvent:index}
+    methods:  [GET]
+delete_users_from_event_handle_form:
+    path: /event/select_user_to_remove/{eventId}
+    defaults: {_controller: AppBundle:DeleteUsersFromEvent:handleForm}
+    methods:  [POST]
 
 fos_user_security:
     resource: "@FOSUserBundle/Resources/config/routing/security.xml"

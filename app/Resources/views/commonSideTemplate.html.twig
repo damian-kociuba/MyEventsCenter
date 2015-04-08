@@ -17,7 +17,9 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
+                    {% if app.user %}
+                        <li><a href="{{path('new_event')}}">Create event</a></li>
+                    {% endif %}
                     <li><a href="#">Link</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
@@ -35,5 +37,5 @@
 {% endblock %}
 
 {% block main_container %}
-    
+
 {% endblock %}

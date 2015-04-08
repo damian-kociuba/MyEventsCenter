@@ -1,0 +1,77 @@
+{% extends 'commonSideTemplate.html.twig' %}
+
+{% block main_container %}
+    <div class="block">
+        <h2>Select users to invite</h2>
+        <div class="container-fluid">
+            <form method="POST" action="" id="selectUsersForm">
+                <div class="row">
+                    <div class="col-sm-5">
+                        Uninvited users
+                        <select multiple class="form-control" id="allUsers">
+                            {% for user in uninvitedUsers %}
+                                <option value="{{user.getId()}}">{{user.getUsername() }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-sm-2 text-center" style="padding-top:20px;">
+                        <button type="button" class="btn btn-default" id="addUserToInvitation">></button><br>
+                        <button type="button" class="btn btn-default" id="delUserFromInvitation"><</button>
+                    </div>
+                    <div class="col-sm-5">
+                        Invitated users
+                        <select multiple class="form-control" name="selectedUsers[]" id="selectedUsers" disabled="disabled">
+                            {% for user in invitedUsers %}
+                                <option value="{{user.getId()}}" selected="selected">{{user.getUsername() }}</option>
+                            {% endfor %}
+                        </select>
+
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        Description:
+                        <textarea class="form-control" name="description">{{description}}</textarea>
+                            
+                        <button type="submit" class="btn btn-success">
+                            Save
+                        </button>
+                    </div>
+                </div>   
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $("#selectUsersForm").on('submit', function () {
+            $("#selectUsersForm").find('input, select').attr('disabled', false);
+        });
+
+        $("#addUserToInvitation").click(function () {
+            moveFromSelectToAnother($("#allUsers"), $("#selectedUsers"), true);
+        });
+        $("#delUserFromInvitation").click(function () {
+            moveFromSelectToAnother($("#selectedUsers"), $("#allUsers"));
+        });
+
+        function moveFromSelectToAnother(sourceJElement, destinationJElement, markAsSelect) {
+            var selectedUsers = sourceJElement.find("option:selected");
+
+            for (var i = 0; i < selectedUsers.length; i++) {
+                var attributes = {
+                    value: $(selectedUsers[i]).val(),
+                    text: $(selectedUsers[i]).text()
+                };
+                if (markAsSelect) {
+                    attributes.selected = "selected";
+                }
+                destinationJElement.append($('<option>', attributes));
+            }
+            selectedUsers.remove();
+        }
+    </script>
+{% endblock %}

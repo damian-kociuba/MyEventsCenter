@@ -1,0 +1,24 @@
+{% extends 'commonSideTemplate.html.twig' %}
+
+{% block main_container %}
+    <div class="block">
+        <h2>Select user to remove</h2>
+        <div class="container-fluid">
+            <form method="POST">
+                {% for user in event.getJoinedUsers() %}
+                    <div class="row">
+                        <div class="col-sm-1">
+                            <input type="checkbox" value="{{user.getId()}}" id="{{user.getId()}}" name="userIdToDelete[]">
+                        </div>
+                        <div class="col-sm-11">
+                            <label for="{{user.getId()}}">{{user.getUsername()}}</label>
+                        </div>
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-danger">Remove selected users from event</button>
+            </form>
+        </div>
+
+    </div>
+{% endblock %}
+

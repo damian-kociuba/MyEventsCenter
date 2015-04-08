@@ -20,9 +20,24 @@ class LoadData implements FixtureInterface {
      */
     public function load(ObjectManager $manager) {
         $this->manager = $manager;
+        $this->loadCommonUsers();
         $eventOwner = $this->loadAdminUser();
         $lastEvent = $this->loadEvents($eventOwner);
         $this->joinUserToEvent($eventOwner, $lastEvent);
+    }
+
+    private function loadCommonUsers() {
+        $user = new User();
+        $user->setUsername('some user');
+        $user->setEmail('some@example.com');
+        $user->setEnabled(true);
+        $user->addRole('ROLE_USER');
+        $user->setPlainPassword('test');
+        $user->setGender(1);
+        $user->setBirthDate(new \DateTime('02.01.1999'));
+
+        $this->manager->persist($user);
+        $this->manager->flush();
     }
 
     private function loadAdminUser() {

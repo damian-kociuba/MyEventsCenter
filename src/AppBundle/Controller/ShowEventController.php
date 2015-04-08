@@ -16,7 +16,9 @@ class ShowEventController extends Controller
         
         return $this->render('event/show.html.twig', array(
             'event' => $event,
-            'isCurrentUserMember' => $this->isCurrentUserMemberOfEvent($event, $eventRepo)
+            'isCurrentUserMember' => $this->isCurrentUserMemberOfEvent($event, $eventRepo),
+            'isCurrentUserOwner' => $this->isCurrentUserOwnerOfEvent($event, $eventRepo),
+            'isEventPublic' => $event->getIsPublic()
         ));
     }
     
@@ -25,6 +27,13 @@ class ShowEventController extends Controller
             return null;
         }
         return $eventRepo->isUserJoinedToEvent($this->getUser(), $event);
+    }
+    
+    private function isCurrentUserOwnerOfEvent(Event $event, EventRepository $eventRepo) {
+        if($this->getUser() === null) {
+            return null;
+        }
+        return $this->getUser()->getId() === $event->getOwner()->getId();
     }
     
 }

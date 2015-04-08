@@ -68,6 +68,11 @@ class Event {
      * @ORM\JoinTable(name="users_events")
      **/
     private $joinedUsers;
+    
+    /**
+     * @ORM\OneToOne(targetEntity="Invitation", mappedBy="event")
+     **/
+    private $invitation;
 
     public function isMembersLimit() {
         return $this->getMaxMembersNumber() !== null;
@@ -339,5 +344,28 @@ class Event {
     public function getJoinedUsers()
     {
         return $this->joinedUsers;
+    }
+
+    /**
+     * Set invitation
+     *
+     * @param \AppBundle\Entity\Invitation $invitation
+     * @return Event
+     */
+    public function setInvitation(\AppBundle\Entity\Invitation $invitation = null)
+    {
+        $this->invitation = $invitation;
+
+        return $this;
+    }
+
+    /**
+     * Get invitation
+     *
+     * @return \AppBundle\Entity\Invitation 
+     */
+    public function getInvitation()
+    {
+        return $this->invitation;
     }
 }

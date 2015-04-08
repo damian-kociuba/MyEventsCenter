@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Entity\UserRepository")
  */
 class User extends BaseUser {
 
@@ -37,6 +38,16 @@ class User extends BaseUser {
      * @ORM\column(type="date")
      */
     protected $birthDate;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="Invitation", mappedBy="sender")
+     **/
+    private $sendInvitations;
+    
+    /**
+     * @ORM\ManyToMany(targetEntity="Invitation", mappedBy="receivers")
+     */
+    private $receivedInvitations;
 
     public function __construct() {
         parent::__construct();
@@ -164,4 +175,70 @@ class User extends BaseUser {
         $event->removeJoinedUser($this);
     }
 
+
+    /**
+     * Add sendInvitations
+     *
+     * @param \AppBundle\Entity\Invitation $sendInvitations
+     * @return User
+     */
+    public function addSendInvitation(\AppBundle\Entity\Invitation $sendInvitations)
+    {
+        $this->sendInvitations[] = $sendInvitations;
+
+        return $this;
+    }
+
+    /**
+     * Remove sendInvitations
+     *
+     * @param \AppBundle\Entity\Invitation $sendInvitations
+     */
+    public function removeSendInvitation(\AppBundle\Entity\Invitation $sendInvitations)
+    {
+        $this->sendInvitations->removeElement($sendInvitations);
+    }
+
+    /**
+     * Get sendInvitations
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getSendInvitations()
+    {
+        return $this->sendInvitations;
+    }
+
+    /**
+     * Add receivedInvitations
+     *
+     * @param \AppBundle\Entity\Invitation $receivedInvitations
+     * @return User
+     */
+    public function addReceivedInvitation(\AppBundle\Entity\Invitation $receivedInvitations)
+    {
+        $this->receivedInvitations[] = $receivedInvitations;
+
+        return $this;
+    }
+
+    /**
+     * Remove receivedInvitations
+     *
+     * @param \AppBundle\Entity\Invitation $receivedInvitations
+     */
+    public function removeReceivedInvitation(\AppBundle\Entity\Invitation $receivedInvitations)
+    {
+        $this->receivedInvitations->removeElement($receivedInvitations);
+    }
+
+    /**
+     * Get receivedInvitations
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getReceivedInvitations()
+    {
+        return $this->receivedInvitations;
+    }
 }
