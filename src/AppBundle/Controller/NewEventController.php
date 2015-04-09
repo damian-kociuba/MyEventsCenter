@@ -22,13 +22,15 @@ class NewEventController extends Controller {
                 ->add('startDate', 'date')
                 ->add('endDate', 'date')
                 ->add('endRegistrationDate', 'date')
+                ->add('latitude', 'hidden')
+                ->add('longitude', 'hidden')
                 ->add('save', 'submit')
                 ->getForm();
 
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            var_dump($event);
+            $event->setOwner($this->getUser());
             $em = $this->getDoctrine()->getManager();
             $em->persist($event);
             $em->flush();

@@ -52,6 +52,8 @@
                         map: map
                     });
                 }
+                $("#form_latitude").val(location.lat());
+                $("#form_longitude").val(location.lng());
                 getAddress(location);
             }
 

@@ -34,9 +34,15 @@ delete_users_from_event:
     path: /event/select_user_to_remove/{eventId}
     defaults: {_controller: AppBundle:DeleteUsersFromEvent:index}
     methods:  [GET]
+    
 delete_users_from_event_handle_form:
     path: /event/select_user_to_remove/{eventId}
     defaults: {_controller: AppBundle:DeleteUsersFromEvent:handleForm}
+    methods:  [POST]
+    
+find_the_closest_events:
+    path: /event/find_the_closest
+    defaults: {_controller: AppBundle:FindTheClosestEvents:index}
     methods:  [POST]
 
 fos_user_security:

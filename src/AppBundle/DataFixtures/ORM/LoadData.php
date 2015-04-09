@@ -58,7 +58,9 @@ class LoadData implements FixtureInterface {
 
     public function loadEvents(User $eventOwner) {
         $event = new Event();
-        $event->setAddress('Katowice, moniuszki 7');
+        $event->setAddress('Olimpijska 11, Katowice');
+        $event->setLatitude(50.26763895717659);
+        $event->setLongitude(19.027242064476013);
         $event->setDescription('Some desc.');
         $event->setEndDate(new \DateTime('15.05.2015'));
         $event->setIsPublic(true);
@@ -69,7 +71,9 @@ class LoadData implements FixtureInterface {
         $this->manager->persist($event);
 
         $event = new Event();
-        $event->setAddress('Poznań, Jana Pawła II 20');
+        $event->setAddress('Ratajczaka 1, Poznań, Polska');
+        $event->setLatitude(52.40278543661038);
+        $event->setLongitude(16.92344069480896);
         $event->setDescription('Public past event');
         $event->setEndDate(new \DateTime('28.01.2015'));
         $event->setIsPublic(true);
@@ -81,7 +85,9 @@ class LoadData implements FixtureInterface {
         $this->manager->persist($event);
 
         $event = new Event();
-        $event->setAddress('Wrocław, Mickiewicza 50');
+        $event->setAddress('Łęczyńska 29, Lublin, Polska');
+        $event->setLatitude(51.24007674714826);
+        $event->setLongitude(22.584822177886963);
         $event->setDescription('Private event');
         $event->setEndDate(new \DateTime('28.05.2015'));
         $event->setIsPublic(false);
@@ -92,7 +98,9 @@ class LoadData implements FixtureInterface {
         $this->manager->persist($event);
 
         $event = new Event();
-        $event->setAddress('Warszawa, Jana Pawła II 20');
+        $event->setAddress('Warszawa, Wawelska 19');
+        $event->setLatitude(52.21592940490216);
+        $event->setLongitude(20.982331037521362);
         $event->setDescription('Public event');
         $event->setEndDate(new \DateTime('28.05.2015'));
         $event->setIsPublic(true);

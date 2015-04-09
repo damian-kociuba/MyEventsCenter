@@ -16,13 +16,13 @@ class Event {
      * @ORM\GeneratedValue
      */
     private $id;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="ownEvents")
      * @ORM\JoinColumn(name="owner_id", referencedColumnName="id", onDelete="CASCADE")
-     **/
+     * */
     private $owner;
-    
+
     /**
      * @ORM\Column(type="boolean")
      */
@@ -62,40 +62,50 @@ class Event {
      * @ORM\Column(type="string", nullable=false)
      */
     private $address;
-    
+
+    /**
+     * @ORM\Column(type="float", nullable=false)
+     */
+    private $latitude;
+
+    /**
+     * @ORM\Column(type="float", nullable=false)
+     */
+    private $longitude;
+
     /**
      * @ORM\ManyToMany(targetEntity="User", inversedBy="joinedEvents")
      * @ORM\JoinTable(name="users_events")
-     **/
+     * */
     private $joinedUsers;
-    
+
     /**
      * @ORM\OneToOne(targetEntity="Invitation", mappedBy="event")
-     **/
+     * */
     private $invitation;
 
     public function isMembersLimit() {
         return $this->getMaxMembersNumber() !== null;
     }
+
     /**
      * 
      * @return false if no limit or integer
      */
     public function getNumberOfAvailablePlaces() {
-        if($this->getMaxMembersNumber() === null) {
+        if ($this->getMaxMembersNumber() === null) {
             return false;
-        }
-        else {
+        } else {
             return $this->getMaxMembersNumber() - $this->getJoinedUsers()->count();
         }
     }
+
     /**
      * Get id
      *
      * @return integer 
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -105,8 +115,7 @@ class Event {
      * @param boolean $isPublic
      * @return Event
      */
-    public function setIsPublic($isPublic)
-    {
+    public function setIsPublic($isPublic) {
         $this->isPublic = $isPublic;
 
         return $this;
@@ -117,8 +126,7 @@ class Event {
      *
      * @return boolean 
      */
-    public function getIsPublic()
-    {
+    public function getIsPublic() {
         return $this->isPublic;
     }
 
@@ -128,8 +136,7 @@ class Event {
      * @param string $name
      * @return Event
      */
-    public function setName($name)
-    {
+    public function setName($name) {
         $this->name = $name;
 
         return $this;
@@ -140,8 +147,7 @@ class Event {
      *
      * @return string 
      */
-    public function getName()
-    {
+    public function getName() {
         return $this->name;
     }
 
@@ -151,8 +157,7 @@ class Event {
      * @param string $description
      * @return Event
      */
-    public function setDescription($description)
-    {
+    public function setDescription($description) {
         $this->description = $description;
 
         return $this;
@@ -163,8 +168,7 @@ class Event {
      *
      * @return string 
      */
-    public function getDescription()
-    {
+    public function getDescription() {
         return $this->description;
     }
 
@@ -174,8 +178,7 @@ class Event {
      * @param \DateTime $startDate
      * @return Event
      */
-    public function setStartDate($startDate)
-    {
+    public function setStartDate($startDate) {
         $this->startDate = $startDate;
 
         return $this;
@@ -186,8 +189,7 @@ class Event {
      *
      * @return \DateTime 
      */
-    public function getStartDate()
-    {
+    public function getStartDate() {
         return $this->startDate;
     }
 
@@ -197,8 +199,7 @@ class Event {
      * @param \DateTime $endDate
      * @return Event
      */
-    public function setEndDate($endDate)
-    {
+    public function setEndDate($endDate) {
         $this->endDate = $endDate;
 
         return $this;
@@ -209,8 +210,7 @@ class Event {
      *
      * @return \DateTime 
      */
-    public function getEndDate()
-    {
+    public function getEndDate() {
         return $this->endDate;
     }
 
@@ -220,8 +220,7 @@ class Event {
      * @param integer $maxMembersNumber
      * @return Event
      */
-    public function setMaxMembersNumber($maxMembersNumber)
-    {
+    public function setMaxMembersNumber($maxMembersNumber) {
         $this->maxMembersNumber = $maxMembersNumber;
 
         return $this;
@@ -232,8 +231,7 @@ class Event {
      *
      * @return integer 
      */
-    public function getMaxMembersNumber()
-    {
+    public function getMaxMembersNumber() {
         return $this->maxMembersNumber;
     }
 
@@ -243,8 +241,7 @@ class Event {
      * @param \DateTime $endRegistrationDate
      * @return Event
      */
-    public function setEndRegistrationDate($endRegistrationDate)
-    {
+    public function setEndRegistrationDate($endRegistrationDate) {
         $this->endRegistrationDate = $endRegistrationDate;
 
         return $this;
@@ -255,8 +252,7 @@ class Event {
      *
      * @return \DateTime 
      */
-    public function getEndRegistrationDate()
-    {
+    public function getEndRegistrationDate() {
         return $this->endRegistrationDate;
     }
 
@@ -266,8 +262,7 @@ class Event {
      * @param string $address
      * @return Event
      */
-    public function setAddress($address)
-    {
+    public function setAddress($address) {
         $this->address = $address;
 
         return $this;
@@ -278,8 +273,7 @@ class Event {
      *
      * @return string 
      */
-    public function getAddress()
-    {
+    public function getAddress() {
         return $this->address;
     }
 
@@ -289,8 +283,7 @@ class Event {
      * @param \AppBundle\Entity\User $owner
      * @return Event
      */
-    public function setOwner(\AppBundle\Entity\User $owner = null)
-    {
+    public function setOwner(\AppBundle\Entity\User $owner = null) {
         $this->owner = $owner;
 
         return $this;
@@ -301,15 +294,14 @@ class Event {
      *
      * @return \AppBundle\Entity\User 
      */
-    public function getOwner()
-    {
+    public function getOwner() {
         return $this->owner;
     }
+
     /**
      * Constructor
      */
-    public function __construct()
-    {
+    public function __construct() {
         $this->joinedUsers = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -319,8 +311,7 @@ class Event {
      * @param \AppBundle\Entity\User $joinedUsers
      * @return Event
      */
-    public function addJoinedUser(\AppBundle\Entity\User $joinedUsers)
-    {
+    public function addJoinedUser(\AppBundle\Entity\User $joinedUsers) {
         $this->joinedUsers[] = $joinedUsers;
 
         return $this;
@@ -331,8 +322,7 @@ class Event {
      *
      * @param \AppBundle\Entity\User $joinedUsers
      */
-    public function removeJoinedUser(\AppBundle\Entity\User $joinedUsers)
-    {
+    public function removeJoinedUser(\AppBundle\Entity\User $joinedUsers) {
         $this->joinedUsers->removeElement($joinedUsers);
     }
 
@@ -341,8 +331,7 @@ class Event {
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getJoinedUsers()
-    {
+    public function getJoinedUsers() {
         return $this->joinedUsers;
     }
 
@@ -352,8 +341,7 @@ class Event {
      * @param \AppBundle\Entity\Invitation $invitation
      * @return Event
      */
-    public function setInvitation(\AppBundle\Entity\Invitation $invitation = null)
-    {
+    public function setInvitation(\AppBundle\Entity\Invitation $invitation = null) {
         $this->invitation = $invitation;
 
         return $this;
@@ -364,8 +352,54 @@ class Event {
      *
      * @return \AppBundle\Entity\Invitation 
      */
-    public function getInvitation()
-    {
+    public function getInvitation() {
         return $this->invitation;
+    }
+
+
+    /**
+     * Set latitude
+     *
+     * @param float $latitude
+     * @return Event
+     */
+    public function setLatitude($latitude)
+    {
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
+    /**
+     * Get latitude
+     *
+     * @return float 
+     */
+    public function getLatitude()
+    {
+        return $this->latitude;
+    }
+
+    /**
+     * Set longitude
+     *
+     * @param float $longitude
+     * @return Event
+     */
+    public function setLongitude($longitude)
+    {
+        $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    /**
+     * Get longitude
+     *
+     * @return float 
+     */
+    public function getLongitude()
+    {
+        return $this->longitude;
     }
 }
