@@ -56,7 +56,23 @@
                                     </div>
                                 </form>
                             </div>
-                            <div role="tabpanel" class="tab-pane" id="location">4234423</div>
+                            <div role="tabpanel" class="tab-pane" id="location">
+                                <button class="btn btn-default" ng-click="searchByUserLocation()">Get your location</button>
+                                {{'{{geolocalizationError}}'}}
+                                <div ng-if="eventsByLocation !== null">
+                                    <div ng-if="eventsByLocation.length == 0">
+                                        Not found
+                                    </div>
+                                    <div class="event" ng-repeat="event in eventsByLocation">
+                                        <h3><a href="{{ '{{event.path}}' }}">{{ '{{event.name}}' }}</a></h3>
+                                        <span>{{ '{{event.startDate|date : "yyyy-MM-dd HH:mm:ss"}}' }} - {{ '{{event.endDate|date : "yyyy-MM-dd HH:mm:ss"}}' }}</span>
+                                        <div>
+                                            {{ '{{event.description}}' }}
+                                        </div>
+                                        <button class="btn btn-success" ng-click="changeLocalization({{ 'event.address'}});">Show on the map</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                     </div>
@@ -104,6 +120,43 @@
                                                     $scope.changeLocalization = function (addr) {
                                                         changeLocalization(addr);
                                                     };
+
+                                                    $scope.searchByUserLocation = function () {
+                                                        if (navigator.geolocation) {
+                                                            navigator.geolocation.getCurrentPosition(showPosition, showError);
+                                                        } else {
+                                                            $scope.geolocalizationError = "Geolocation is not supported by this browser.";
+                                                        }
+                                                    };
+
+                                                    function showPosition(position) {
+                                                        $http.post('{{path('find_the_closest_events')}}', {'latitude': position.coords.latitude, 'longitude': position.coords.longitude}).
+                                                                success(function (data, status, headers, config) {
+                                                                    $scope.eventsByLocation = data.events;
+                                                                }).
+                                                                error(function (data, status, headers, config) {
+                                                                    // called asynchronously if an error occurs
+                                                                    // or server returns response with an error status.
+                                                                });
+
+                                                    }
+
+                                                    function showError(error) {
+                                                        switch (error.code) {
+                                                            case error.PERMISSION_DENIED:
+                                                                $scope.geolocalizationError = "User denied the request for Geolocation.";
+                                                                break;
+                                                            case error.POSITION_UNAVAILABLE:
+                                                                $scope.geolocalizationError = "Location information is unavailable.";
+                                                                break;
+                                                            case error.TIMEOUT:
+                                                                $scope.geolocalizationError = "The request to get user location timed out.";
+                                                                break;
+                                                            case error.UNKNOWN_ERROR:
+                                                                $scope.geolocalizationError = "An unknown error occurred.";
+                                                                break;
+                                                        }
+                                                    }
                                                 }]);
     </script>
     <script>
@@ -124,6 +177,7 @@
                 'address': newAddress
             }, function (results, status) {
                 if (status == google.maps.GeocoderStatus.OK) {
+                    console.log(results[0].geometry.location);
                     if (typeof (homepageMapMarker) !== 'undefined') {
                         homepageMapMarker.setMap(null);
                     }
@@ -131,6 +185,7 @@
                         map: homepageMap,
                         position: results[0].geometry.location
                     });
+
                     homepageMap.setCenter(homepageMapMarker.getPosition());
                 }
             });
