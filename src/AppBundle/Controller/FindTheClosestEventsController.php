@@ -9,30 +9,26 @@ class FindTheClosestEventsController extends Controller {
     public function indexAction(\Symfony\Component\HttpFoundation\Request $request) {
         $post = json_decode($request->getContent(), true);
 
-        $latitude = $post['latitude'];
-        $longitude = $post['longitude'];
+        $latitude = filter_var($post['latitude'], FILTER_VALIDATE_FLOAT);
+        $longitude = filter_var($post['longitude'], FILTER_VALIDATE_FLOAT);
         $em = $this->getDoctrine()->getManager();
 
-        $sql = 'SELECT id, isPublic, name, description, startDate,endDate,maxMembersNumber, endRegistrationDate, address, (
-6371 * acos( cos( radians( 52 ) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians( 20 ) ) + sin( radians( 52 ) ) * sin( radians( latitude ) ) )
-) AS distance
-FROM Event
-HAVING distance <100
-ORDER BY `Event`.`id` ASC
-LIMIT 0 , 20';
-//        $stmt = $em->getConnection()->prepare($sql);
-//        
-//        $stmt->execute();
         $queryBuilder = $em->getConnection()->createQueryBuilder();
         $queryBuilder
-                ->select('id', 'isPublic', 'name', 'description', 'startDate', 'endDate', 'maxMembersNumber', 'endRegistrationDate', 'address', '(6371 * acos( cos( radians( 52 ) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians( 20 ) ) + sin( radians( 52 ) ) * sin( radians( latitude ) ) )) AS distance')
-                ->from('Event')
-                ->having('distance<100');
-        $query = $queryBuilder->getQuery();
-        $stmt = $query->getResult();        
+                ->select('id', 'isPublic', 'name', 'description', 'startDate', 'endDate', 'maxMembersNumber', 'endRegistrationDate', 'address', '(6371 * acos( cos( radians( '.$latitude.' ) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians( '.$longitude.' ) ) + sin( radians( '.$latitude.' ) ) * sin( radians( latitude ) ) )) AS distance')
+                ->from('Event', 'e')
+                ->having('distance<5');
+                
+        //$query = $queryBuilder->getQuery();
+        $stmt = $em->getConnection()->executeQuery($queryBuilder->getSql());
+
+        $events = $stmt->fetchAll();
+        foreach($events as &$event) {
+            $event['path'] = $this->generateUrl('show_event', array('eventId'=>$event['id']));
+        }
         $response = new \Symfony\Component\HttpFoundation\JsonResponse();
         $response->setData(array(
-            'events' => $stmt->fetchAll()
+            'events' => $events
         ));
 
         return $response;

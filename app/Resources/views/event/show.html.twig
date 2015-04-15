@@ -67,7 +67,7 @@
                                 Resign
                             </a>
                         {% else %}
-                            <a href="{{path('join_to_event', {'eventId':event.Id})}}" class="btn btn-success" id="joinButton">
+                            <a href="{{path('join_to_event', {'eventId':event.Id})}}" {% if not allowedToJoin %} disabled {% endif %}class="btn btn-success" id="joinButton">
                                 Join!
                             </a>
                         {% endif %}

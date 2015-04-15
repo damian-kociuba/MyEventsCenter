@@ -13,7 +13,8 @@ class HomepageController extends Controller
                 ->setParameter('now', new \DateTime);
         
         return $this->render('index.html.twig', array(
-            'nearestEvents' => $query->getResult(),
+            'comingEvents' => $query->getResult(),
+           
         ));
     }
 }

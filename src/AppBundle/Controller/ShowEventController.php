@@ -18,7 +18,8 @@ class ShowEventController extends Controller
             'event' => $event,
             'isCurrentUserMember' => $this->isCurrentUserMemberOfEvent($event, $eventRepo),
             'isCurrentUserOwner' => $this->isCurrentUserOwnerOfEvent($event, $eventRepo),
-            'isEventPublic' => $event->getIsPublic()
+            'isEventPublic' => $event->getIsPublic(),
+            'allowedToJoin' => $event->getIsPublic() || (!$event->getIsPublic() && $this->isUserInvitedToEvent($event))
         ));
     }
     
@@ -29,11 +30,28 @@ class ShowEventController extends Controller
         return $eventRepo->isUserJoinedToEvent($this->getUser(), $event);
     }
     
-    private function isCurrentUserOwnerOfEvent(Event $event, EventRepository $eventRepo) {
+    private function isCurrentUserOwnerOfEvent(Event $event) {
         if($this->getUser() === null) {
             return null;
         }
         return $this->getUser()->getId() === $event->getOwner()->getId();
+    }
+    
+    private function isUserInvitedToEvent(Event $event) {
+        $invitation = $event->getInvitation();
+        $user = $this->getUser();
+        if($invitation === null || $user === null) {
+            return false;
+        }
+        
+        foreach($invitation->getReceivers() as $receiver) {
+            if($receiver->getId() === $user->getId()) 
+            {
+                return true;
+            }
+        }
+        
+        return false;
     }
     
 }

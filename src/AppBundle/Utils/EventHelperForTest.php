@@ -22,6 +22,8 @@ trait EventHelperForTest {
         $event = new Event();
         $event->setAddress('Gdańsk, Spokojna 1');
         $event->setDescription('Public past event');
+        $event->setLatitude(52.40278543661038);
+        $event->setLongitude(16.92344069480896);
         $event->setEndDate(new \DateTime('28.10.2015'));
         $event->setIsPublic(true);
         $event->setEndRegistrationDate(new \DateTime('15.05.2015'));
