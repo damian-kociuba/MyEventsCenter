@@ -9,3 +9,9 @@ services:
         arguments: [%fos_user.model.user.class%]
         tags:
             - { name: form.type, alias: appbundle_user_registration }
+            
+    my.oauth_aware.user_provider.service:
+        class: HWI\Bundle\OAuthBundle\Security\Core\User\FOSUBUserProvider
+        arguments:
+            userManager: "@fos_user.user_manager"
+            properties: ["pass properties as array"]

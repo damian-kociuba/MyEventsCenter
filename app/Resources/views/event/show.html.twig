@@ -103,33 +103,8 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="http://maps.googleapis.com/maps/api/js"></script>
+    <script type="text/javascript" src="{{ asset('js/event/show.js') }}"></script>
     <script>
-
-        function initialize() {
-
-            geocoder = new google.maps.Geocoder();
-            geocoder.geocode({
-                'address': '{{event.address}}'
-            }, function (results, status) {
-                if (status == google.maps.GeocoderStatus.OK) {
-                    var myOptions = {
-                        zoom: 10,
-                        center: results[0].geometry.location,
-                        mapTypeId: google.maps.MapTypeId.ROADMAP
-                    }
-                    map = new google.maps.Map(document.getElementById("googleMap"), myOptions);
-
-                    var marker = new google.maps.Marker({
-                        map: map,
-                        position: results[0].geometry.location
-                    });
-                }
-            });
-        }
-        google.maps.event.addDomListener(window, 'load', initialize);
-
-
-
+        google.maps.event.addDomListener(window, 'load', function(){initialize('{{event.address}}');});
     </script>
 {% endblock %}

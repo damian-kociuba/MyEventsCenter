@@ -32,7 +32,7 @@ trait UserHelperForTest {
         $testUser->setPlainPassword(self::$userHelperPassword);
         $testUser->setGender(1);
         $testUser->setBirthDate(new \DateTime('02.01.1999'));
-
+ 
 
         $em->persist($testUser);
         $em->flush();

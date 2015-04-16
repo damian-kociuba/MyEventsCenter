@@ -43,8 +43,8 @@ class HomepageControllerTest extends WebTestCase {
                 ->setParameter('now', new \DateTime);
         $numberOfEventsToShow = $query->getSingleScalarResult();
         
-        $events = $crawler->filter('.event');
-        $this->assertEquals($numberOfEventsToShow, $events->count());
+        $events = $crawler->filter('div#comming .event');
+        $this->assertEquals($events->count(), $numberOfEventsToShow);
         
     }
 
