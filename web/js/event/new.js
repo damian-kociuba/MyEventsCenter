@@ -26,8 +26,8 @@ function initialize() {
                 map: map
             });
         }
-        $("#form_latitude").val(location.lat());
-        $("#form_longitude").val(location.lng());
+        $("#eventForm_latitude").val(location.lat());
+        $("#eventForm_longitude").val(location.lng());
         getAddress(location);
     }
 
@@ -46,7 +46,7 @@ function initialize() {
             else {
                 addressToShow = status;
             }
-            $("#form_address").val(addressToShow);
+            $("#eventForm_address").val(addressToShow);
         });
     }
 }

@@ -6,26 +6,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\EventRepository;
 use AppBundle\Entity\Event;
+use AppBundle\Form\Type\EventType;
 
 class NewEventController extends Controller {
 
     public function indexAction(Request $request) {
         $event = new Event();
-        $form = $this->createFormBuilder($event)
-                ->add('name', 'text')
-                ->add('address', 'text')
-                ->add('description', 'text')
-                ->add('maxMembersNumber', 'number')
-                ->add('isPublic', 'choice', array(
-                    'choices' => array('1' => 'Yes', '0' => 'No'),
-                ))
-                ->add('startDate', 'date')
-                ->add('endDate', 'date')
-                ->add('endRegistrationDate', 'date')
-                ->add('latitude', 'hidden')
-                ->add('longitude', 'hidden')
-                ->add('save', 'submit')
-                ->getForm();
+        $form = $this->createForm(new EventType(), $event);
 
         $form->handleRequest($request);
 
