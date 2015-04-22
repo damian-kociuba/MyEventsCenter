@@ -47,14 +47,14 @@ use \AppBundle\Utils\EventHelperForTest;
     public function testIsResponseCorrectJSON() {
         $this->client = static::createClient();
         //search by coordinate in the same city
-        $this->client->request('POST', '/event/find_the_closest', array('latitude' => 50.809789, 'longitude' => 19.127433));
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $requestContent = json_encode(array('latitude' => 50.809789, 'longitude' => 19.127433));
+        $this->client->request('POST', '/event/find_the_closest', array(), array(), array(), $requestContent);
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode()); 
         $this->assertEquals('application/json', $this->client->getResponse()->headers->get('Content-Type'));
 
         return $this->client;
     }
 
-    //TODO: Fix test bellow: Why does not assert pass
     /**
      * @depends testIsResponseCorrectJSON
      * @param Client $client
@@ -63,7 +63,7 @@ use \AppBundle\Utils\EventHelperForTest;
         #$query = self::$em->createQuery('SELECT e FROM AppBundle:Event e WHERE e.name = \'Close test Event\'');
         #$event= $query->getResult();
         #var_dump($event);
-        $content = json_decode($client->getResponse()->getContent(), true);
+        $content = json_decode($client->getResponse()->getContent(), true); 
         #var_dump($content);
         $this->assertEquals(1, count($content['events']));
     }
