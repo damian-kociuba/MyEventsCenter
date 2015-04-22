@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Utils;
+namespace AppBundle\Utils\Test;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Client;
@@ -11,7 +11,7 @@ use AppBundle\Entity\User;
  *
  * @author dkociuba
  */
-trait UserHelperForTest {
+trait UserHelper {
 
     private static $userHelperUsername;
     private static $userHelperPassword;

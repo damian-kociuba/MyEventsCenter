@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Utils;
+namespace AppBundle\Utils\Test;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use AppBundle\Entity\User;
@@ -11,7 +11,7 @@ use AppBundle\Entity\Event;
  *
  * @author dkociuba
  */
-trait EventHelperForTest {
+trait EventHelper {
 
     /**
      * @var Event

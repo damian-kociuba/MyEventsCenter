@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class NewEventControllerTest extends WebTestCase {
 
-    use \AppBundle\Utils\UserHelperForTest;
+    use \AppBundle\Utils\Test\UserHelper;
 
     /**
      *

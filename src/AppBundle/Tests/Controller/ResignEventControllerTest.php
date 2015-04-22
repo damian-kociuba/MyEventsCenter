@@ -13,8 +13,8 @@ class ResignEventEventControllerTest extends WebTestCase {
 
     const TEST_USER_PASSWORD = 'test';
 
-    use \AppBundle\Utils\UserHelperForTest;
-    use \AppBundle\Utils\EventHelperForTest;
+    use \AppBundle\Utils\Test\UserHelper;
+    use \AppBundle\Utils\Test\EventHelper;
 
     /**
      *

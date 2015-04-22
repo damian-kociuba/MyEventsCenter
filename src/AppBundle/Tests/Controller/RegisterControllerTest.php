@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class RegisterControllerTest extends WebTestCase {
 
-    use \AppBundle\Utils\DatabaseHelperForTests;
+    use \AppBundle\Utils\Test\DatabaseHelper;
     
     protected function setUp() {
         $this->dropDatabase();

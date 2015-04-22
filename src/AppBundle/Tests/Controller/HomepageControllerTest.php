@@ -7,7 +7,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class HomepageControllerTest extends WebTestCase {
 
-    use \AppBundle\Utils\DatabaseHelperForTests;
+    use \AppBundle\Utils\Test\DatabaseHelper;
 
     
     private $em;

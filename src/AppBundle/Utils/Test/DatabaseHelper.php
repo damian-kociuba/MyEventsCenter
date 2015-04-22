@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Utils;
+namespace AppBundle\Utils\Test;
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Output\NullOutput;
@@ -15,7 +15,7 @@ use Doctrine\Bundle\DoctrineBundle\Command\Proxy\CreateSchemaDoctrineCommand;
  *
  * @author dkociuba
  */
-trait DatabaseHelperForTests {
+trait DatabaseHelper {
 
     private $entityMenagerDatabaseHelper;
     private $applicationDatabaseHelper;

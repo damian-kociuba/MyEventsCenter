@@ -8,9 +8,9 @@ use Symfony\Bundle\FrameworkBundle\Client;
 
 class DeleteUsersFromEventControllerTest extends WebTestCase {
 
-    use \AppBundle\Utils\UserHelperForTest;
+    use \AppBundle\Utils\Test\UserHelper;
 
-use \AppBundle\Utils\EventHelperForTest;
+use \AppBundle\Utils\Test\EventHelper;
 
     /**
      *
