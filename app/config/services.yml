@@ -4,6 +4,9 @@ parameters:
 #    parameter_name: value
 
 services:
+    app.event_manager:
+        class: AppBundle\Utils\Event\EventManager
+    
     appbundle.registration.form.type:
         class: AppBundle\Form\Type\RegistrationFormType
         arguments: [%fos_user.model.user.class%]

@@ -14,15 +14,6 @@ use AppBundle\Entity\User;
  */
 class EventRepository extends EntityRepository {
 
-    public function isUserJoinedToEvent(User $user, Event $event) {
-        foreach ($event->getJoinedUsers() as $member) {
-            if ($member->getId() === $user->getId()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public function findTheClosest($latitude, $longitude, $distance) {
         $latitude = (double)$latitude;
         $longitude = (double)$longitude;
@@ -30,14 +21,17 @@ class EventRepository extends EntityRepository {
         
         $queryBuilder = $this->getEntityManager()->getConnection()->createQueryBuilder();
         $queryBuilder
-                ->select('id', 'isPublic', 'name', 'description', 'startDate', 'endDate', 'maxMembersNumber', 'endRegistrationDate', 'address', '(6371 * acos( cos( radians( ' . $latitude . ' ) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians( ' . $longitude . ' ) ) + sin( radians( ' . $latitude . ' ) ) * sin( radians( latitude ) ) )) AS distance')
+                ->select('id', 'isPublic', 'name', 'description', 'startDate', 'endDate', 'maxMembersNumber', 'endRegistrationDate', 'address', '(6371 * acos( cos( radians( :latitude ) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians( :longitude ) ) + sin( radians( :latitude ) ) * sin( radians( latitude ) ) )) AS distance')
                 ->from('Event', 'e')
-                ->having('distance<'.$distance);
+                ->having('distance < :distance')
+                ->setParameters(array(
+                    'longitude' => $longitude,
+                    'latitude' => $latitude,
+                    'distance' => $distance
+                ));
 
-        //$query = $queryBuilder->getQuery();
-        $stmt = $this->getEntityManager()->getConnection()->executeQuery($queryBuilder->getSql());
-
-        $events = $stmt->fetchAll();
+        
+        $events = $queryBuilder->execute()->fetchAll();
         
         return $events;
     }
