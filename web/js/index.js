@@ -34,69 +34,68 @@ function changeLocalization(newAddress) {
 }
 
 
-function statusChangeCallback(response) {
-    console.log('statusChangeCallback');
-    console.log(response);
-    // The response object is returned with a status field that lets the
-    // app know the current login status of the person.
-    // Full docs on the response object can be found in the documentation
-    // for FB.getLoginStatus().
-    if (response.status === 'connected') {
-        // Logged into your app and Facebook.
-        testAPI();
-    } else if (response.status === 'not_authorized') {
-        // The person is logged into Facebook, but not your app.
-        document.getElementById('status').innerHTML = 'Please log ' +
-                'into this app.';
-    } else {
-        // The person is not logged into Facebook, so we're not sure if
-        // they are logged into this app or not.
-        document.getElementById('status').innerHTML = 'Please log ' +
-                'into Facebook.';
-    }
-}
+var myEventCenterApp = angular.module('MyEventCenterApp', []);
+myEventCenterApp.controller('EventBrowserController', ['$scope', '$http', function ($scope, $http) {
+        $scope.eventsByAddress = null;
+        $scope.searchByAddress = function () {
 
-// This function is called when someone finishes with the Login
-// Button.  See the onlogin handler attached to it in the sample
-// code below.
-function checkLoginState() {
-    FB.getLoginStatus(function (response) {
-        statusChangeCallback(response);
-    });
-}
+            geocoder = new google.maps.Geocoder();
+            geocoder.geocode({
+                'address': $scope.address
+            }, function (results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    var latitude = results[0].geometry.location.lat();
+                    var longitude = results[0].geometry.location.lng();
 
+                    $http.post(paths['find_the_closest_events'], {'latitude': latitude, 'longitude': longitude}).
+                            success(function (data, status, headers, config) {
+                                $scope.eventsByAddress = data.events;
+                            }).
+                            error(function (data, status, headers, config) {
+                                // called asynchronously if an error occurs
+                                // or server returns response with an error status.
+                            });
+                }
+            });
+        };
+        $scope.changeLocalization = function (addr) {
+            changeLocalization(addr);
+        };
 
+        $scope.searchByUserLocation = function () {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                $scope.geolocalizationError = "Geolocation is not supported by this browser.";
+            }
+        };
 
-window.fbAsyncInit = function () {
-    FB.init({
-        appId: '1418465341795606',
-        xfbml: true,
-        version: 'v2.3'
-    });
-    FB.getLoginStatus(function (response) {
-        statusChangeCallback(response);
-    });
-};
+        function showPosition(position) {
+            $http.post(paths['find_the_closest_events'], {'latitude': position.coords.latitude, 'longitude': position.coords.longitude}).
+                    success(function (data, status, headers, config) {
+                        $scope.eventsByLocation = data.events;
+                    }).
+                    error(function (data, status, headers, config) {
+                        // called asynchronously if an error occurs
+                        // or server returns response with an error status.
+                    });
 
-function logout() {
-    FB.logout();
-}
-(function (d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) {
-        return;
-    }
-    js = d.createElement(s);
-    js.id = id;
-    js.src = "//connect.facebook.net/en_US/sdk.js";
-    fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));
+        }
 
-function testAPI() {
-    console.log('Welcome!  Fetching your information.... ');
-    FB.api('/me', function (response) {
-        console.log('Successful login for: ' + response.name);
-        document.getElementById('status').innerHTML =
-                'Thanks for logging in, ' + response.name + '!';
-    });
-}
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    $scope.geolocalizationError = "User denied the request for Geolocation.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    $scope.geolocalizationError = "Location information is unavailable.";
+                    break;
+                case error.TIMEOUT:
+                    $scope.geolocalizationError = "The request to get user location timed out.";
+                    break;
+                case error.UNKNOWN_ERROR:
+                    $scope.geolocalizationError = "An unknown error occurred.";
+                    break;
+            }
+        }
+    }]);

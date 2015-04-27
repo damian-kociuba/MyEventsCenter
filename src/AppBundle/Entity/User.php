@@ -19,6 +19,14 @@ class User extends BaseUser {
     protected $id;
 
     /**
+     * @ORM\Column(type="bigint", nullable=true)
+     */
+    protected $facebook_id;
+
+    /** @ORM\Column(name="facebook_access_token", type="string", length=255, nullable=true) */
+    protected $facebook_access_token;
+
+    /**
      * @ORM\OneToMany(targetEntity="Event", mappedBy="owner")
      */
     private $ownEvents;
@@ -38,12 +46,12 @@ class User extends BaseUser {
      * @ORM\column(type="date")
      */
     protected $birthDate;
-    
+
     /**
      * @ORM\OneToMany(targetEntity="Invitation", mappedBy="sender")
-     **/
+     * */
     private $sendInvitations;
-    
+
     /**
      * @ORM\ManyToMany(targetEntity="Invitation", mappedBy="receivers")
      */
@@ -175,15 +183,13 @@ class User extends BaseUser {
         $event->removeJoinedUser($this);
     }
 
-
     /**
      * Add sendInvitations
      *
      * @param \AppBundle\Entity\Invitation $sendInvitations
      * @return User
      */
-    public function addSendInvitation(\AppBundle\Entity\Invitation $sendInvitations)
-    {
+    public function addSendInvitation(\AppBundle\Entity\Invitation $sendInvitations) {
         $this->sendInvitations[] = $sendInvitations;
 
         return $this;
@@ -194,8 +200,7 @@ class User extends BaseUser {
      *
      * @param \AppBundle\Entity\Invitation $sendInvitations
      */
-    public function removeSendInvitation(\AppBundle\Entity\Invitation $sendInvitations)
-    {
+    public function removeSendInvitation(\AppBundle\Entity\Invitation $sendInvitations) {
         $this->sendInvitations->removeElement($sendInvitations);
     }
 
@@ -204,8 +209,7 @@ class User extends BaseUser {
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getSendInvitations()
-    {
+    public function getSendInvitations() {
         return $this->sendInvitations;
     }
 
@@ -215,8 +219,7 @@ class User extends BaseUser {
      * @param \AppBundle\Entity\Invitation $receivedInvitations
      * @return User
      */
-    public function addReceivedInvitation(\AppBundle\Entity\Invitation $receivedInvitations)
-    {
+    public function addReceivedInvitation(\AppBundle\Entity\Invitation $receivedInvitations) {
         $this->receivedInvitations[] = $receivedInvitations;
 
         return $this;
@@ -227,8 +230,7 @@ class User extends BaseUser {
      *
      * @param \AppBundle\Entity\Invitation $receivedInvitations
      */
-    public function removeReceivedInvitation(\AppBundle\Entity\Invitation $receivedInvitations)
-    {
+    public function removeReceivedInvitation(\AppBundle\Entity\Invitation $receivedInvitations) {
         $this->receivedInvitations->removeElement($receivedInvitations);
     }
 
@@ -237,8 +239,50 @@ class User extends BaseUser {
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getReceivedInvitations()
-    {
+    public function getReceivedInvitations() {
         return $this->receivedInvitations;
     }
+
+    /**
+     * Set facebook_id
+     *
+     * @param integer $facebookId
+     * @return User
+     */
+    public function setFacebookId($facebookId) {
+        $this->facebook_id = $facebookId;
+
+        return $this;
+    }
+
+    /**
+     * Get facebook_id
+     *
+     * @return integer 
+     */
+    public function getFacebookId() {
+        return $this->facebook_id;
+    }
+
+    /**
+     * Set facebook_access_token
+     *
+     * @param string $facebookAccessToken
+     * @return User
+     */
+    public function setFacebookAccessToken($facebookAccessToken) {
+        $this->facebook_access_token = $facebookAccessToken;
+
+        return $this;
+    }
+
+    /**
+     * Get facebook_access_token
+     *
+     * @return string 
+     */
+    public function getFacebookAccessToken() {
+        return $this->facebook_access_token;
+    }
+
 }

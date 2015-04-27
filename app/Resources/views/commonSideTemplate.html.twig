@@ -20,7 +20,6 @@
                     {% if app.user %}
                         <li><a href="{{path('new_event')}}">Create event</a></li>
                     {% endif %}
-                    <li><a href="#">Link</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if app.user %}
@@ -28,6 +27,7 @@
                     {% else %}
                         <li><a href="{{url('fos_user_registration_register')}}">{{'layout.register' |trans({}, 'FOSUserBundle')}} </a></li>
                         <li><a href="{{url('fos_user_security_login')}}">{{ 'layout.login'|trans({}, 'FOSUserBundle')}}</a></li>
+                        <li><a href="{{ path('hwi_oauth_service_redirect', {'service': 'facebook' }) }}" alt="Sign in with Facebook">Sign in with Facebook</a></li>
                     {% endif %}
 
                 </ul>
